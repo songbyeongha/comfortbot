@@ -1,0 +1,70 @@
+# Use postgres/example user/password credentials
+version: '3.5'
+
+services:
+  #포스트그레스큐엘 DB 서버
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    ports: 
+      - 5432:5432  
+    networks:
+      - ssafy-network
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=ssafy
+      - POSTGRES_USER=ssafy
+      - POSTGRES_PASSWORD=ssafy
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+
+  #웹 기반 DB 접속기
+  #adminer:
+  # image: adminer
+  # container_name: dbadmin
+  # restart: always
+  # ports:
+  #   - 8001:8080
+  # networks:
+  #   - ssafy-network
+
+  #프론트엔드:노드js
+  front:
+    image: node
+    container_name: front
+    restart: always
+    ports:
+      - 8080:8080
+    working_dir: /usr/src/app
+    volumes:
+      - ./front:/usr/src/app
+    command: >
+      bash -c "yarn install && yarn serve"
+    environment:
+      - LC_ALL=C.UTF-8
+    tty: true
+    networks:
+      - ssafy-network
+
+  #백엔드:flask
+  back:
+    image: phaethon5882/flask:1.0
+    container_name: back
+    restart: always
+    ports:
+      - 5000:5000
+    working_dir: /usr/src/app
+    volumes:
+      - ./back:/usr/src/app
+    command: >
+      bash -c "pip3 install -U gast==0.2.2 && python3 app.py"
+    environment:
+      - LC_ALL=C.UTF-8
+    tty: true
+    networks:
+      - ssafy-network
+
+networks:
+  ssafy-network:
+    name: ssafy-network

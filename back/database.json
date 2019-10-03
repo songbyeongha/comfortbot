@@ -1,0 +1,7 @@
+{
+  "user": "ssafy",
+  "password": "ssafy",
+  "host": "db",
+  "dbname": "ssafy",
+  "port": "5432"
+}
